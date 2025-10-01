@@ -24,12 +24,21 @@ report += "\nStatus: WARNING\n"
 for location in data["locations"]:
     for device in location["devices"]:
         if device["status"] == "warning":
-            report += device["hostname"] + "   " 
-            report += device["ip_address"] + "   "
-            report += device["type"] + "   "
-            report += location["site"] + "   "
-            report += "Uptime days: " + str(device["uptime_days"])
+            if device["uptime_days"] < 5:
+                report += device["hostname"] + "   " 
+                report += device["ip_address"] + "   "
+                report += device["type"] + "   "
+                report += location["site"] + "   "
+                report += "(uptime: " + str(device["uptime_days"]) + " dagar)"
+        
+            if device["connected_clients"] < 40:
+                report += device["hostname"] + "   " 
+                report += device["ip_address"] + "   "
+                report += device["type"] + "   "
+                report += location["site"] + "   "
+                report += str(device["connected_clients"])
             report += "\n"
+
 
 # Write the report to textfile
 with open ("report.txt", "w", encoding="utf-8") as f:
