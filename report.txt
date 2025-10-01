@@ -4,55 +4,12 @@ Nätverksrapport
 
 ENHETER MED PROBLEM
 ---------------
-SW-CORE-01     192.168.1.1     online
-SW-CORE-02     192.168.1.2     online
-SW-DIST-01     192.168.1.3     online
-SW-DIST-02     192.168.1.4     online
-SW-ACCESS-03     192.168.1.5     offline
-SW-ACCESS-04     192.168.1.6     online
-SW-ACCESS-05     192.168.1.7     online
-RT-EDGE-01     192.168.1.254     online
-RT-EDGE-02     192.168.1.253     online
-AP-FLOOR1-01     192.168.10.101     online
-AP-FLOOR1-02     192.168.10.102     online
-AP-FLOOR2-01     192.168.20.101     online
-AP-FLOOR2-02     192.168.20.102     warning
-AP-FLOOR3-01     192.168.30.101     online
-FW-DMZ-01     192.168.100.1     online
 
-ENHETER MED PROBLEM
----------------
-SW-LAGER-01     192.168.2.1     online
-SW-LAGER-02     192.168.2.2     online
-RT-LAGER-01     192.168.2.254     warning
-AP-LAGER-01     192.168.200.101     online
-AP-LAGER-02     192.168.200.102     offline
+Status: OFFLINE
+SW-ACCESS-03   192.168.1.5   switch   Huvudkontor
+AP-LAGER-02   192.168.200.102   access_point   Lager
 
-ENHETER MED PROBLEM
----------------
-SW-MAL-CORE-01     192.168.3.1     online
-SW-MAL-ACC-01     192.168.3.2     online
-SW-MAL-ACC-02     192.168.3.3     online
-RT-MAL-01     192.168.3.254     online
-AP-MAL-01     192.168.3.101     online
-AP-MAL-02     192.168.3.102     online
-FW-MAL-01     192.168.3.200     online
-
-ENHETER MED PROBLEM
----------------
-SW-DC-CORE-01     10.0.0.1     online
-SW-DC-CORE-02     10.0.0.2     online
-SW-DC-TOR-01     10.0.1.1     online
-SW-DC-TOR-02     10.0.1.2     warning
-SW-DC-TOR-03     10.0.1.3     online
-RT-DC-EDGE-01     10.0.0.254     online
-FW-DC-01     10.0.0.100     online
-FW-DC-02     10.0.0.101     online
-LB-DC-01     10.0.0.50     online
-LB-DC-02     10.0.0.51     online
-
-ENHETER MED PROBLEM
----------------
-SW-DR-01     10.1.0.1     online
-RT-DR-01     10.1.0.254     online
-FW-DR-01     10.1.0.100     online
+Status: WARNING
+AP-FLOOR2-02   192.168.20.102   access_point   Huvudkontor   Uptime days: 2
+RT-LAGER-01   192.168.2.254   router   Lager   Uptime days: 2
+SW-DC-TOR-02   10.0.1.2   switch   Datacenter   Uptime days: 5
