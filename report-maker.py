@@ -12,10 +12,15 @@ report += "===============\n" + "Nätverksrapport" + "\n===============\n"
 for location in data["locations"]:
     # print the "site/name" of the location
     
-    report += "\n" + location["site"] + "\n---------------\n"
+    report += "\n" + "ENHETER MED PROBLEM" + "\n---------------\n"
     # print a list of the host names of the devices on the location
+    
     for device in location["devices"]:
-        report += " " + device["hostname"] + "\n"
+        if device["status"] == "offline":
+            report += device["hostname"] + " " 
+            report += device["ip_address"] + " "
+            report += device["type"] + " "
+            report += device["status"] + "\n"
 
 # Write the report to textfile
 with open ("report.txt", "w", encoding="utf-8") as f:
