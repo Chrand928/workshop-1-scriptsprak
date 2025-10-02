@@ -6,10 +6,11 @@ ENHETER MED PROBLEM
 ---------------
 
 Status: OFFLINE
-SW-ACCESS-03   192.168.1.5   switch   Huvudkontor
-AP-LAGER-02   192.168.200.102   access_point   Lager
+SW-ACCESS-03     192.168.1.5      switch           Huvudkontor
+AP-LAGER-02      192.168.200.102  access_point     Lager
 
 Status: WARNING
-AP-FLOOR2-02   192.168.20.102   access_point   Huvudkontor   (uptime: 2 dagar) (45 anslutna enheter!)
-RT-LAGER-01   192.168.2.254   router   Lager   (uptime: 2 dagar)
-
+AP-FLOOR2-02     192.168.20.102   access_point     Huvudkontor    (uptime: 2 dagar)
+AP-FLOOR2-02     192.168.20.102   access_point     Huvudkontor    (45 anslutna klienter!)
+RT-LAGER-01      192.168.2.254    router           Lager          (uptime: 2 dagar)
+SW-DC-TOR-02     10.0.1.2         switch           Datacenter     (uptime: 5 dagar)

@@ -15,27 +15,39 @@ report += "\nStatus: OFFLINE\n"
 for location in data["locations"]:   
     for device in location["devices"]:
         if device["status"] == "offline":
-            report += device["hostname"] + "   " 
-            report += device["ip_address"] + "   "
-            report += device["type"] + "   "
-            report += location["site"] + "\n"
+            report +=(device["hostname"].ljust (17, " ") 
+                    + device["ip_address"].ljust (17, " ") 
+                    + device["type"].ljust (17, " ") 
+                    + location["site"] 
+                    + "\n")
 
 # Loop to collect all "warning" devices in a list
 report += "\nStatus: WARNING\n"
 for location in data["locations"]:
     for device in location["devices"]:
         if device["status"] == "warning":
-            if device["uptime_days"] < 5:
-                report += device["hostname"] + "   " 
-                report += device["ip_address"] + "   "
-                report += device["type"] + "   "
-                report += location["site"] + "   "
-                report += "(uptime: " + str(device["uptime_days"]) + " dagar)"
-        
+            if device["uptime_days"] < 6:
+                report +=(device["hostname"].ljust(17, " ")
+                        + device["ip_address"].ljust(17, " ")
+                        + device["type"].ljust(17, " ")
+                        + location["site"].ljust(15, " ")
+                        + "(uptime: " + str(device["uptime_days"]) + " dagar)" 
+                        + "\n")
+                
+            #Maybe change something like if information from both "uptime_days" and "connected_clients" are from the same device only show "connected_clients"
             if "connected_clients" in device and device["connected_clients"] > 40:
-                report += " (" + str(device["connected_clients"]) + " anslutna klienter!)"
-            report += "\n"
+                report +=(device["hostname"].ljust(17, " ")
+                        + device["ip_address"].ljust(17, " ")
+                        + device["type"].ljust(17, " ")
+                        + location["site"].ljust(15, " ")
+                        + "(" + str(device["connected_clients"]) + " anslutna klienter!)" 
+                        + "\n")
 
+# Summering av rapporten där summary hamnar ovanför report när den skrivs till .txt fil
+#summary = ""
+#summary += "Summary:\n"
+#summary += device["type"] osv.
+#report = summary + report
 
 # Write the report to textfile
 with open ("report.txt", "w", encoding="utf-8") as f:
