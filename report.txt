@@ -1,6 +1,8 @@
-===============
-Nätverksrapport
-===============
+==============================
+Nätverksrapport - TechCorp AB
+==============================
+Rapportdatum: 
+Datauppdatering: 2024-09-30T10:30:00
 
 ENHETER MED PROBLEM
 ---------------

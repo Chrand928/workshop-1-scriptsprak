@@ -1,12 +1,30 @@
 # Imports json data
 import json
+from datetime import datetime
 
 # Read network-devices.json in utf-8 format
 data = json.load(open("network-devices.json","r",encoding = "utf-8"))
 
 # Create a variable that holds our whole text report
 report = ""
-report += "===============\n" + "Nätverksrapport" + "\n===============\n"
+
+# Adds company name variable to the report
+report += "==============================\n" + "Nätverksrapport - " 
+for company in data["company"]:
+    report += company
+report += "\n==============================\n"
+
+#Somehow have to add the value from real-time information. ----- INTE KLART
+report += "Rapportdatum: "
+#report += str(datetime)
+
+report += "\n"
+
+report += "Datauppdatering: "
+for last_updated in data["last_updated"]:
+    report += last_updated
+report += "\n"
+
 
 report += "\n" + "ENHETER MED PROBLEM" + "\n---------------\n"
 
