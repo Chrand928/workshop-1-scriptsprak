@@ -26,22 +26,22 @@ report += "\nStatus: WARNING\n"
 for location in data["locations"]:
     for device in location["devices"]:
         if device["status"] == "warning":
+            line = (device["hostname"].ljust(17, " ")
+                  + device["ip_address"].ljust(17, " ")
+                  + device["type"].ljust(17, " ")
+                  + location["site"].ljust(15, " "))
+
+            info_parts = []
+
             if device["uptime_days"] < 6:
-                report +=(device["hostname"].ljust(17, " ")
-                        + device["ip_address"].ljust(17, " ")
-                        + device["type"].ljust(17, " ")
-                        + location["site"].ljust(15, " ")
-                        + "(uptime: " + str(device["uptime_days"]) + " dagar)" 
-                        + "\n")
-                
-            #Maybe change something like if information from both "uptime_days" and "connected_clients" are from the same device only show "connected_clients"
-            if "connected_clients" in device and device["connected_clients"] > 40:
-                report +=(device["hostname"].ljust(17, " ")
-                        + device["ip_address"].ljust(17, " ")
-                        + device["type"].ljust(17, " ")
-                        + location["site"].ljust(15, " ")
-                        + "(" + str(device["connected_clients"]) + " anslutna klienter!)" 
-                        + "\n")
+                info_parts.append(f"uptime: {device["uptime_days"]} dagar") 
+
+            if "connected_clients" in device and device ["connected_clients"] > 40:
+                info_parts.append(f"{device["connected_clients"]} anslutna klienter!")
+
+            if info_parts:
+                report += f"{line} ({", ".join(info_parts)})\n"
+
 
 # Summering av rapporten där summary hamnar ovanför report när den skrivs till .txt fil
 #summary = ""
