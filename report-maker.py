@@ -7,6 +7,7 @@ data = json.load(open("network-devices.json","r",encoding = "utf-8"))
 # Create a variable that holds our whole text report
 report = ""
 report += "===============\n" + "Nätverksrapport" + "\n===============\n"
+
 report += "\n" + "ENHETER MED PROBLEM" + "\n---------------\n"
 
 # Loop to collect all "offline" devices in a list
@@ -31,12 +32,8 @@ for location in data["locations"]:
                 report += location["site"] + "   "
                 report += "(uptime: " + str(device["uptime_days"]) + " dagar)"
         
-            if device["connected_clients"] < 40:
-                report += device["hostname"] + "   " 
-                report += device["ip_address"] + "   "
-                report += device["type"] + "   "
-                report += location["site"] + "   "
-                report += str(device["connected_clients"])
+            if "connected_clients" in device and device["connected_clients"] > 40:
+                report += " (" + str(device["connected_clients"]) + " anslutna klienter!)"
             report += "\n"
 
 
