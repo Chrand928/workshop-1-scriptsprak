@@ -53,32 +53,47 @@ for location in data["locations"]:
                   + device["type"].ljust(17, " ")
                   + location["site"].ljust(15, " "))
 
-            # info_parts add on additional information such as uptime days and 
+            # info adds on additional information such as uptime days and 
             # connected clients to the warning report 
-            info_parts = []
+            warning_info = []
 
             if device["uptime_days"] < 6:
-                info_parts.append(f"uptime: {device["uptime_days"]} dagar") 
+                warning_info.append(f"uptime: {device["uptime_days"]} dagar") 
 
             if "connected_clients" in device and device ["connected_clients"] > 40:
-                info_parts.append(f"{device["connected_clients"]} anslutna klienter!")
+                warning_info.append(f"{device["connected_clients"]} anslutna klienter!")
 
-            if info_parts:
-                report += f"{line} ({", ".join(info_parts)})\n"
+            if warning_info:
+                report += f"{line} ({" ⚠ ".join(warning_info)})\n"
 
-# Enheter med låg uptime
+# Loop to gather all units with uptime at 30 days or lower
 report += "\n" + "ENHETER MED LÅG UPTIME (<30 dagar)" + "\n---------------\n"
-uptime = 0
+
+# "uptime" Creates variable to be able to sort the list from low to high
+uptime = []
 for location in data["locations"]:
     for device in location["devices"]:
         if device["uptime_days"] <31:
-            uptime += 1
+            uptime.append({
+                "hostname": device["hostname"],
+                "uptime_days": device["uptime_days"],
+                "site": location["site"]})
 
-            report +=(device["hostname"].ljust(17, " ")
-                    + str(device["uptime_days"]).ljust(3, " ") + " dagar".ljust(12, " ")
-                    + location["site"].ljust(17, " ")
-                    + "\n"
-                      )
+# Code to sort the uptime from lowest to highest
+uptime_sorted = sorted(uptime, key=lambda u_d: u_d["uptime_days"])
+
+for device in uptime_sorted:
+    line = (device["hostname"].ljust(17, " ")
+            + str(device["uptime_days"]).ljust(3, " ") + " dagar".ljust(12, " ")
+            + device["site"].ljust(17, " ")
+            )
+    # Adds on "KRISTISKT" information to any device with uptime of 3 days or lower
+    if device["uptime_days"] < 4:
+        line += "⚠ KRITISKT ⚠"
+    
+    report += line + "\n"
+
+ 
             
             
 
