@@ -28,7 +28,7 @@ for last_updated in data["last_updated"]:
 report += "\n"
 
 
-report += "\n" + "ENHETER MED PROBLEM" + "\n---------------\n"
+report += "\n" + "ENHETER MED PROBLEM" + "\n---------------"
 
 # Loop to collect all "offline" devices in a list
 report += "\nStatus: OFFLINE\n"
@@ -93,9 +93,31 @@ for device in uptime_sorted:
     
     report += line + "\n"
 
- 
-            
-            
+
+# Adds library to gather information on types of devices in json file
+types_of_devices = {}            
+
+for location in data["locations"]:
+    for device in location["devices"]:
+        device_type = device["type"]
+        if device_type not in types_of_devices:
+            types_of_devices[device_type] = {"total": 0, "offline": 0}
+
+        types_of_devices[device_type]["total"] += 1
+
+        if device.get("status") == "offline":
+            types_of_devices[device_type]["offline"] += 1
+
+report += "\n" + "STATISTIK PER ENHETSTYP" + "\n---------------\n"        
+
+# Adds formating values to the gathered information to replace "_" symbol 
+# with a " " and make it a capital letter at the start for the device type
+for device_type, stats in types_of_devices.items():
+    formated_type = device_type.replace("_", " ").title()
+    report += (
+        f"{formated_type}:".ljust(17) +
+        f"{stats["total"]:2d} st ({stats["offline"]} offline)\n"
+        )
 
 # Summering av rapporten där summary hamnar ovanför report när den skrivs till .txt fil
 #summary = ""

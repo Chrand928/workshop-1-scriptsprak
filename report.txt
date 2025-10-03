@@ -1,12 +1,11 @@
 ==============================
 Nätverksrapport - TechCorp AB
 ==============================
-Rapportdatum: 2025-10-03 11:03:43
+Rapportdatum: 2025-10-03 12:27:43
 Datauppdatering: 2024-09-30T10:30:00
 
 ENHETER MED PROBLEM
 ---------------
-
 Status: OFFLINE
 SW-ACCESS-03     192.168.1.5      switch           Huvudkontor
 AP-LAGER-02      192.168.200.102  access_point     Lager
@@ -27,3 +26,11 @@ SW-MAL-ACC-02    8   dagar      Kontor Malmö
 AP-FLOOR2-01     12  dagar      Huvudkontor      
 SW-ACCESS-05     15  dagar      Huvudkontor      
 SW-LAGER-02      23  dagar      Lager            
+
+STATISTIK PER ENHETSTYP
+---------------
+Switch:          18 st (1 offline)
+Router:           6 st (0 offline)
+Access Point:     9 st (1 offline)
+Firewall:         5 st (0 offline)
+Load Balancer:    2 st (0 offline)
