@@ -9,6 +9,9 @@ time_format = dtn.strftime("%Y-%m-%d %H:%M:%S")
 # Read network-devices.json in utf-8 format
 data = json.load(open("network-devices.json","r",encoding = "utf-8"))
 
+def format_device_type(device_type):
+    return device_type.replace ("_", " ").title()
+
 # Create a variable that holds our whole text report
 report = ""
 
@@ -32,12 +35,14 @@ report += "\n" + "ENHETER MED PROBLEM" + "\n---------------"
 
 # Loop to collect all "offline" devices in a list
 report += "\nStatus: OFFLINE\n"
+
 for location in data["locations"]:   
     for device in location["devices"]:
         if device["status"] == "offline":
+            formatted_type = format_device_type(device["type"])    
             report +=(device["hostname"].ljust (17, " ") 
                     + device["ip_address"].ljust (17, " ") 
-                    + device["type"].ljust (17, " ") 
+                    + formatted_type.ljust (17, " ") 
                     + location["site"] 
                     + "\n")
 
@@ -46,11 +51,11 @@ report += "\nStatus: WARNING\n"
 for location in data["locations"]:
     for device in location["devices"]:
         if device["status"] == "warning":
-            
+            formatted_type = format_device_type(device["type"])
             # Line code to add the necessary information to the report
             line = (device["hostname"].ljust(17, " ")
                   + device["ip_address"].ljust(17, " ")
-                  + device["type"].ljust(17, " ")
+                  + formatted_type.ljust(17, " ")
                   + location["site"].ljust(15, " "))
 
             # info adds on additional information such as uptime days and 
@@ -113,9 +118,9 @@ report += "\n" + "STATISTIK PER ENHETSTYP" + "\n---------------\n"
 # Adds formating values to the gathered information to replace "_" symbol 
 # with a " " and make it a capital letter at the start for the device type
 for device_type, stats in types_of_devices.items():
-    formated_type = device_type.replace("_", " ").title()
+    formatted_type = format_device_type(device_type)
     report += (
-        f"{formated_type}:".ljust(17) +
+        f"{formatted_type}:".ljust(17) +
         f"{stats["total"]:2d} st ({stats["offline"]} offline)\n"
         )
 
