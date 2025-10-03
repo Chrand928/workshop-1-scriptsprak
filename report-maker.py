@@ -1,6 +1,10 @@
 # Imports json data
 import json
+
+# Import realtime date and time and formating it to be used in the report
 from datetime import datetime
+dtn = datetime.now()
+time_format = dtn.strftime("%Y-%m-%d %H:%M:%S")
 
 # Read network-devices.json in utf-8 format
 data = json.load(open("network-devices.json","r",encoding = "utf-8"))
@@ -14,12 +18,10 @@ for company in data["company"]:
     report += company
 report += "\n==============================\n"
 
-#Somehow have to add the value from real-time information. ----- INTE KLART
-report += "Rapportdatum: "
-#report += str(datetime)
+# Adds time and date value to the report
+report += f"Rapportdatum: {time_format}\n"
 
-report += "\n"
-
+# Adds time of the creation of the json report data
 report += "Datauppdatering: "
 for last_updated in data["last_updated"]:
     report += last_updated
@@ -44,11 +46,15 @@ report += "\nStatus: WARNING\n"
 for location in data["locations"]:
     for device in location["devices"]:
         if device["status"] == "warning":
+            
+            # Line code to add the necessary information to the report
             line = (device["hostname"].ljust(17, " ")
                   + device["ip_address"].ljust(17, " ")
                   + device["type"].ljust(17, " ")
                   + location["site"].ljust(15, " "))
 
+            # info_parts add on additional information such as uptime days and 
+            # connected clients to the warning report 
             info_parts = []
 
             if device["uptime_days"] < 6:
@@ -60,6 +66,21 @@ for location in data["locations"]:
             if info_parts:
                 report += f"{line} ({", ".join(info_parts)})\n"
 
+# Enheter med låg uptime
+report += "\n" + "ENHETER MED LÅG UPTIME (<30 dagar)" + "\n---------------\n"
+uptime = 0
+for location in data["locations"]:
+    for device in location["devices"]:
+        if device["uptime_days"] <31:
+            uptime += 1
+
+            report +=(device["hostname"].ljust(17, " ")
+                    + str(device["uptime_days"]).ljust(3, " ") + " dagar".ljust(12, " ")
+                    + location["site"].ljust(17, " ")
+                    + "\n"
+                      )
+            
+            
 
 # Summering av rapporten där summary hamnar ovanför report när den skrivs till .txt fil
 #summary = ""
