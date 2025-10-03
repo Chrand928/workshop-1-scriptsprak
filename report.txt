@@ -1,7 +1,7 @@
 ==============================
 Nätverksrapport - TechCorp AB
 ==============================
-Rapportdatum: 2025-10-03 15:07:20
+Rapportdatum: 2025-10-03 17:25:52
 Datauppdatering: 2024-09-30T10:30:00
 
 ENHETER MED PROBLEM
@@ -34,3 +34,5 @@ Router:           6 st (0 offline)
 Access Point:     9 st (1 offline)
 Firewall:         5 st (0 offline)
 Load Balancer:    2 st (0 offline)
+
+Totalt:         40 enheter (2 offline = 5.0% offline)

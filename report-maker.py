@@ -101,17 +101,24 @@ for device in uptime_sorted:
 
 # Adds library to gather information on types of devices in json file
 types_of_devices = {}            
+total_devices = 0
+total_offline = 0
 
 for location in data["locations"]:
     for device in location["devices"]:
         device_type = device["type"]
+        total_devices+= 1
+
         if device_type not in types_of_devices:
             types_of_devices[device_type] = {"total": 0, "offline": 0}
 
         types_of_devices[device_type]["total"] += 1
 
         if device.get("status") == "offline":
+            total_offline += 1
             types_of_devices[device_type]["offline"] += 1
+
+offline_status = (total_offline / total_devices) * 100 if total_devices > 0 else 0
 
 report += "\n" + "STATISTIK PER ENHETSTYP" + "\n---------------\n"        
 
@@ -123,6 +130,8 @@ for device_type, stats in types_of_devices.items():
         f"{formatted_type}:".ljust(17) +
         f"{stats["total"]:2d} st ({stats["offline"]} offline)\n"
         )
+
+report += "\nTotalt:".ljust(17) + f"{total_devices} enheter ({total_offline} offline = {offline_status:.1f}% offline)\n"
 
 # Summering av rapporten där summary hamnar ovanför report när den skrivs till .txt fil
 #summary = ""
