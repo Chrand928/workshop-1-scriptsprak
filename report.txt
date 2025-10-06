@@ -1,7 +1,7 @@
 ==============================
 Nätverksrapport - TechCorp AB
 ==============================
-Rapportdatum: 2025-10-06 14:23:35
+Rapportdatum: 2025-10-06 14:56:27
 Datauppdatering: 2024-09-30T10:30:00
 
 ENHETER MED PROBLEM
@@ -93,3 +93,11 @@ Säkerhetskopia (Umeå):
  Enheter: 3 (3 online, 0 offline, 0 warning)
  Kontakt: Erik Eriksson
 
+
+ACCESSPUNKTER - KLIENTÖVERSIKT
+------------------------------
+ AP-FLOOR2-02    45 klienter ⚠ Överbelastad ⚠
+ AP-FLOOR3-01    31 klienter
+ AP-MAL-01       28 klienter
+ AP-FLOOR1-02    25 klienter
+ AP-FLOOR2-01    23 klienter

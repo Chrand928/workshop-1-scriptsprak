@@ -253,6 +253,31 @@ for location in data ["locations"]:
     report += f" Enheter: {total_devices} ({status_string})\n"
     report += f" Kontakt: {contact}\n\n"
 
+
+report += "\n" + "ACCESSPUNKTER - KLIENTÖVERSIKT" + "\n------------------------------\n"
+
+# Gathers information on access points to add to the report
+access_points = []
+for location in data["locations"]:
+    for device in location["devices"]:
+        if device["type"] == "access_point" and "connected_clients" in device:
+            access_points.append({"hostname": device["hostname"],
+                                  "connected_clients": device["connected_clients"]})
+
+#Sorts access points from high to low
+access_points_sorted = sorted(access_points, key=lambda ap: ap["connected_clients"], reverse=True)
+
+# Adds the most used access points to the report
+for ap in access_points_sorted: 
+    if ap["connected_clients"] > 20: # If an access point has more than 20 devices connected it will be added to the list
+        warning = " ⚠ Överbelastad ⚠" if ap["connected_clients"] > 40 else ""
+        report += (f" {ap["hostname"].ljust(15)} "
+                   f"{ap["connected_clients"]} klienter"
+                   f"{warning}\n")
+
+
+
+
 # Summering av rapporten där summary hamnar ovanför report när den skrivs till .txt fil
 #summary = ""
 #summary += "Summary:\n"
