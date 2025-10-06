@@ -1,19 +1,19 @@
 ==============================
 Nätverksrapport - TechCorp AB
 ==============================
-Rapportdatum: 2025-10-06 12:30:07
+Rapportdatum: 2025-10-06 14:23:35
 Datauppdatering: 2024-09-30T10:30:00
 
 ENHETER MED PROBLEM
 ------------------------------
 Status: OFFLINE
-SW-ACCESS-03     192.168.1.5      Switch           Huvudkontor
-AP-LAGER-02      192.168.200.102  Access Point     Lager
+ SW-ACCESS-03     192.168.1.5      Switch           Huvudkontor
+ AP-LAGER-02      192.168.200.102  Access Point     Lager
 
 Status: WARNING
-AP-FLOOR2-02     192.168.20.102   Access Point     Huvudkontor     (uptime: 2 dagar ⚠ 45 anslutna klienter!)
-RT-LAGER-01      192.168.2.254    Router           Lager           (uptime: 2 dagar)
-SW-DC-TOR-02     10.0.1.2         Switch           Datacenter      (uptime: 5 dagar)
+ AP-FLOOR2-02     192.168.20.102   Access Point     Huvudkontor     (uptime: 2 dagar ⚠ 45 anslutna klienter!)
+ RT-LAGER-01      192.168.2.254    Router           Lager           (uptime: 2 dagar)
+ SW-DC-TOR-02     10.0.1.2         Switch           Datacenter      (uptime: 5 dagar)
 
 ENHETER MED LÅG UPTIME (<30 dagar)
 ------------------------------
@@ -70,3 +70,26 @@ Totalt antal unika VLANs i nätverket: 19 st
 VLANs:
 10, 20, 30, 40, 50, 100, 110, 120, 200, 300
 400, 500, 600, 700, 800, 900, 1000, 2000, 2100
+
+STATISTIK PER SITE
+------------------------------
+Huvudkontor (Stockholm):
+ Enheter: 15 (13 online, 1 offline, 1 warning)
+ Kontakt: Anna Andersson
+
+Lager (Göteborg):
+ Enheter: 5 (3 online, 1 offline, 1 warning)
+ Kontakt: Björn Björnsson
+
+Kontor Malmö (Malmö):
+ Enheter: 7 (7 online, 0 offline, 0 warning)
+ Kontakt: Cecilia Carlsson
+
+Datacenter (Stockholm):
+ Enheter: 10 (9 online, 0 offline, 1 warning)
+ Kontakt: David Davidsson
+
+Säkerhetskopia (Umeå):
+ Enheter: 3 (3 online, 0 offline, 0 warning)
+ Kontakt: Erik Eriksson
+

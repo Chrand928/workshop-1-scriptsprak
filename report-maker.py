@@ -40,7 +40,8 @@ for location in data["locations"]:
     for device in location["devices"]:
         if device["status"] == "offline":
             formatted_type = format_device_type(device["type"])    
-            report +=(device["hostname"].ljust (17, " ") 
+            report +=( " "
+                    + device["hostname"].ljust (17, " ") 
                     + device["ip_address"].ljust (17, " ") 
                     + formatted_type.ljust (17, " ") 
                     + location["site"] 
@@ -53,7 +54,8 @@ for location in data["locations"]:
         if device["status"] == "warning":
             formatted_type = format_device_type(device["type"])
             # Line code to add the necessary information to the report
-            line = (device["hostname"].ljust(17, " ")
+            line = (" "
+                  + device["hostname"].ljust(17, " ")
                   + device["ip_address"].ljust(17, " ")
                   + formatted_type.ljust(17, " ")
                   + location["site"].ljust(15, " "))
@@ -141,6 +143,7 @@ report += "Site".ljust(18) + "Switchar".ljust(10) + "Använt/Totalt".ljust(15) +
 total_used_ports = 0
 total_ports = 0
 
+# Gathers information and adds formulas to count the sum of the ports
 for location in data["locations"]:
     site = location["site"]
     switches = [device for device in location["devices"] if device["type"] == "switch"]
@@ -150,12 +153,14 @@ for location in data["locations"]:
 
     if num_switches == 0:
         continue
-
+    
+    # Calculates the usage percentage of ports
     usage_percent = (used_ports / total_site_ports) * 100
 
     total_used_ports += used_ports
     total_ports += total_site_ports
 
+    # Adds criteria for when a warning message gets added
     warning = " ⚠ " if usage_percent > 80 else ""
     critical = "KRITISKT! ⚠" if usage_percent > 90 else ""
     report += (
@@ -172,6 +177,7 @@ report += f"\nTotalt: ".ljust(5) + f"{total_used_ports}/{total_ports} portar anv
 
 report += "\n" + "SWITCHAR MED HÖG PORTANVÄNDNING (>80%)" + "\n------------------------------\n"
 
+#Gather information and combine "ports" with "used" and "total" values to use in a calculation
 for location in data ["locations"]:
     for device in location ["devices"]:
         if device ["type"] == "switch":
@@ -179,9 +185,12 @@ for location in data ["locations"]:
             total_ports = device["ports"]["total"]
             usage_percent = (used_ports / total_ports) * 100
 
+            # Adds variables for when warning messages get added to the report 
             if usage_percent > 80:
                 warning = " ⚠ "
                 full = "FULLT! ⚠" if used_ports == total_ports else ""
+                
+                # Adds gathered information to the report
                 report += (
                     f"{device["hostname"]}".ljust(18) + 
                     f"{used_ports}/{total_ports}".ljust(10) + 
@@ -192,30 +201,57 @@ for location in data ["locations"]:
 
 report += "\n" + "VLAN-ÖVERSIKT" + "\n------------------------------\n"
 
+# Gathers all unique VLANs to a list
 vlans_list = set()
 for location in data ["locations"]:
     for device in location["devices"]:
         if device["type"] == "switch" and "vlans" in device:
             vlans_list.update(device["vlans"])
 
+# Sorts the list from low to high
 vlans_sorted = sorted(vlans_list)
 
+# Adds total amount of VLANs to the report
 report += f"Totalt antal unika VLANs i nätverket: {len(vlans_sorted)} st\n\n"
 
+# Formatting the VLAN list loop
 vlans_rows = []
 current_row = []
 for vlan_count, vlan in enumerate(vlans_sorted, 1):
     current_row.append(f"{vlan}")
-    if vlan_count % 10 == 0: 
+    if vlan_count % 10 == 0: # Maximum of 10 VLANs per row in the list
         vlans_rows.append(", ".join(current_row))
         current_row = []
 
 if current_row:
     vlans_rows.append(", ".join(current_row))
 
+# Adds the VLAN list to the report
 report += "VLANs:\n" + vlans_rows[0] + "\n"
 for row in vlans_rows[1:]:
     report += "" + row + "\n"
+
+
+report += "\n" + "STATISTIK PER SITE" + "\n------------------------------\n"
+
+for location in data ["locations"]:
+    site = location["site"]
+    city = location["city"]
+    contact = location["contact"]
+
+    # Counts the units by their status
+    total_devices = len(location["devices"])
+    online_devices = sum(1 for device in location["devices"] if device["status"] == "online")
+    offline_devices = sum(1 for device in location["devices"] if device["status"] == "offline")
+    warning_devices = sum(1 for device in location["devices"] if device["status"] == "warning")
+
+    # String to print out the status
+    status_string = f"{online_devices} online, {offline_devices} offline, {warning_devices} warning"
+
+    # Adds all the gathered info to the report
+    report += f"{site} ({city}):\n"
+    report += f" Enheter: {total_devices} ({status_string})\n"
+    report += f" Kontakt: {contact}\n\n"
 
 # Summering av rapporten där summary hamnar ovanför report när den skrivs till .txt fil
 #summary = ""
