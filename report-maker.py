@@ -169,6 +169,54 @@ for location in data["locations"]:
 total_usage_percent = (total_used_ports / total_ports) * 100 if total_ports > 0 else 0
 report += f"\nTotalt: ".ljust(5) + f"{total_used_ports}/{total_ports} portar används ({total_usage_percent:.1f}%)\n"
 
+
+report += "\n" + "SWITCHAR MED HÖG PORTANVÄNDNING (>80%)" + "\n------------------------------\n"
+
+for location in data ["locations"]:
+    for device in location ["devices"]:
+        if device ["type"] == "switch":
+            used_ports = device["ports"]["used"]
+            total_ports = device["ports"]["total"]
+            usage_percent = (used_ports / total_ports) * 100
+
+            if usage_percent > 80:
+                warning = " ⚠ "
+                full = "FULLT! ⚠" if used_ports == total_ports else ""
+                report += (
+                    f"{device["hostname"]}".ljust(18) + 
+                    f"{used_ports}/{total_ports}".ljust(10) + 
+                    f"{usage_percent:.1f}%".ljust(8) +
+                    f"{warning}{full}\n"
+                )
+
+
+report += "\n" + "VLAN-ÖVERSIKT" + "\n------------------------------\n"
+
+vlans_list = set()
+for location in data ["locations"]:
+    for device in location["devices"]:
+        if device["type"] == "switch" and "vlans" in device:
+            vlans_list.update(device["vlans"])
+
+vlans_sorted = sorted(vlans_list)
+
+report += f"Totalt antal unika VLANs i nätverket: {len(vlans_sorted)} st\n\n"
+
+vlans_rows = []
+current_row = []
+for vlan_count, vlan in enumerate(vlans_sorted, 1):
+    current_row.append(f"{vlan}")
+    if vlan_count % 10 == 0: 
+        vlans_rows.append(", ".join(current_row))
+        current_row = []
+
+if current_row:
+    vlans_rows.append(", ".join(current_row))
+
+report += "VLANs:\n" + vlans_rows[0] + "\n"
+for row in vlans_rows[1:]:
+    report += "" + row + "\n"
+
 # Summering av rapporten där summary hamnar ovanför report när den skrivs till .txt fil
 #summary = ""
 #summary += "Summary:\n"
