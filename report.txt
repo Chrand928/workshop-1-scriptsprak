@@ -1,11 +1,11 @@
 ==============================
 Nätverksrapport - TechCorp AB
 ==============================
-Rapportdatum: 2025-10-03 17:25:52
+Rapportdatum: 2025-10-06 10:29:58
 Datauppdatering: 2024-09-30T10:30:00
 
 ENHETER MED PROBLEM
----------------
+------------------------------
 Status: OFFLINE
 SW-ACCESS-03     192.168.1.5      Switch           Huvudkontor
 AP-LAGER-02      192.168.200.102  Access Point     Lager
@@ -16,7 +16,7 @@ RT-LAGER-01      192.168.2.254    Router           Lager           (uptime: 2 da
 SW-DC-TOR-02     10.0.1.2         Switch           Datacenter      (uptime: 5 dagar)
 
 ENHETER MED LÅG UPTIME (<30 dagar)
----------------
+------------------------------
 SW-ACCESS-03     0   dagar      Huvudkontor      ⚠ KRITISKT ⚠
 AP-LAGER-02      0   dagar      Lager            ⚠ KRITISKT ⚠
 AP-FLOOR2-02     2   dagar      Huvudkontor      ⚠ KRITISKT ⚠
@@ -28,7 +28,7 @@ SW-ACCESS-05     15  dagar      Huvudkontor
 SW-LAGER-02      23  dagar      Lager            
 
 STATISTIK PER ENHETSTYP
----------------
+------------------------------
 Switch:          18 st (1 offline)
 Router:           6 st (0 offline)
 Access Point:     9 st (1 offline)
@@ -36,3 +36,15 @@ Firewall:         5 st (0 offline)
 Load Balancer:    2 st (0 offline)
 
 Totalt:         40 enheter (2 offline = 5.0% offline)
+
+PORTANVÄNDNING SWITCHAR
+------------------------------
+Site              Switchar  Använt/Totalt  Användning
+
+Huvudkontor       7 st      162/216        75.0% 
+Lager             2 st      57/96          59.4% 
+Kontor Malmö      3 st      79/96          82.3%  ⚠ 
+Datacenter        5 st      231/240        96.2%  ⚠ KRITISKT! ⚠
+Säkerhetskopia    1 st      12/28          42.9% 
+
+Totalt: 541/676 portar används (80.0%)

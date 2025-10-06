@@ -31,7 +31,7 @@ for last_updated in data["last_updated"]:
 report += "\n"
 
 
-report += "\n" + "ENHETER MED PROBLEM" + "\n---------------"
+report += "\n" + "ENHETER MED PROBLEM" + "\n------------------------------"
 
 # Loop to collect all "offline" devices in a list
 report += "\nStatus: OFFLINE\n"
@@ -72,7 +72,7 @@ for location in data["locations"]:
                 report += f"{line} ({" ⚠ ".join(warning_info)})\n"
 
 # Loop to gather all units with uptime at 30 days or lower
-report += "\n" + "ENHETER MED LÅG UPTIME (<30 dagar)" + "\n---------------\n"
+report += "\n" + "ENHETER MED LÅG UPTIME (<30 dagar)" + "\n------------------------------\n"
 
 # "uptime" Creates variable to be able to sort the list from low to high
 uptime = []
@@ -120,7 +120,7 @@ for location in data["locations"]:
 
 offline_status = (total_offline / total_devices) * 100 if total_devices > 0 else 0
 
-report += "\n" + "STATISTIK PER ENHETSTYP" + "\n---------------\n"        
+report += "\n" + "STATISTIK PER ENHETSTYP" + "\n------------------------------\n"        
 
 # Adds formating values to the gathered information to replace "_" symbol 
 # with a " " and make it a capital letter at the start for the device type
@@ -132,6 +132,42 @@ for device_type, stats in types_of_devices.items():
         )
 
 report += "\nTotalt:".ljust(17) + f"{total_devices} enheter ({total_offline} offline = {offline_status:.1f}% offline)\n"
+
+
+
+report += "\n" + "PORTANVÄNDNING SWITCHAR" + "\n------------------------------\n"
+report += "Site".ljust(18) + "Switchar".ljust(10) + "Använt/Totalt".ljust(15) + "Användning" + "\n\n"
+
+total_used_ports = 0
+total_ports = 0
+
+for location in data["locations"]:
+    site = location["site"]
+    switches = [device for device in location["devices"] if device["type"] == "switch"]
+    num_switches = len(switches)
+    used_ports = sum(sp["ports"]["used"] for sp in switches)
+    total_site_ports = sum(sp["ports"]["total"] for sp in switches)
+
+    if num_switches == 0:
+        continue
+
+    usage_percent = (used_ports / total_site_ports) * 100
+
+    total_used_ports += used_ports
+    total_ports += total_site_ports
+
+    warning = " ⚠ " if usage_percent > 80 else ""
+    critical = "KRITISKT! ⚠" if usage_percent > 90 else ""
+    report += (
+            f"{site}".ljust(18) +
+            f"{num_switches}".ljust(1) + " st".ljust(9) +
+            f"{used_ports}/{total_site_ports}".ljust(15) + 
+            f"{usage_percent:.1f}%".ljust (6) + 
+            f"{warning}{critical}\n"
+    )
+
+total_usage_percent = (total_used_ports / total_ports) * 100 if total_ports > 0 else 0
+report += f"\nTotalt: ".ljust(5) + f"{total_used_ports}/{total_ports} portar används ({total_usage_percent:.1f}%)\n"
 
 # Summering av rapporten där summary hamnar ovanför report när den skrivs till .txt fil
 #summary = ""
