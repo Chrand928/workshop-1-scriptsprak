@@ -1,7 +1,7 @@
 ==============================
 Nätverksrapport - TechCorp AB
 ==============================
-Rapportdatum: 2025-10-07 12:02:30
+Rapportdatum: 2025-10-07 16:14:30
 Datauppdatering: 2024-09-30T10:30:00
 
 EXECUTIVE SUMMARY
@@ -112,7 +112,7 @@ ACCESSPUNKTER - KLIENTÖVERSIKT
 REKOMMENDATIONER
 ------------------------------
 * ⚠ AKUT: Undersök offline-enheter omgående (2 st)
-* ⚠ KRITISKT: Datacenter har extremt låg uptime - planera expansion
+* ⚠ KRITISKT: Datacenter har extremt hög portanvändning - planera expansion
 * Kontrollera enheter med låg uptime - särskilt de med <5 dagar
 * AP-FLOOR2-02 har 45 anslutna klienter (warning) - överväg lastbalansering
 

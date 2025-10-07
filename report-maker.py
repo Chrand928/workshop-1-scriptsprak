@@ -213,6 +213,8 @@ report += f"\nTotalt: ".ljust(5) + f"{total_used_ports}/{total_ports} portar anv
 
 report += "\n" + "SWITCHAR MED HÖG PORTANVÄNDNING (>80%)" + "\n------------------------------\n"
 
+# Planning to change some code here to sort by the highest percentages first...
+
 #Gather information and combine "ports" with "used" and "total" values to use in a calculation
 for location in data ["locations"]:
     for device in location ["devices"]:
@@ -311,9 +313,11 @@ for ap in access_points_sorted:
 
 report += "\n" + "REKOMMENDATIONER" + "\n------------------------------\n"
 
+# Gathers information on offline units to add to Rekommendationer
 offline_devices = sum(1 for location in data["locations"] for device in location ["devices"] if device["status"] == "offline")
 report += f"* ⚠ AKUT: Undersök offline-enheter omgående ({offline_devices} st)\n"
 
+# Gathers information on datacenter port usage to add to Rekommendationer
 datacenter_usage = None
 for location in data["locations"]:
     if location["site"] == "Datacenter":
@@ -326,7 +330,7 @@ for location in data["locations"]:
                 datacenter_usage = usage_percent
 
 if datacenter_usage is not None:
-    report += "* ⚠ KRITISKT: Datacenter har extremt låg uptime - planera expansion\n"
+    report += "* ⚠ KRITISKT: Datacenter har extremt hög portanvändning - planera expansion\n"
 
 report += "* Kontrollera enheter med låg uptime - särskilt de med <5 dagar\n"
 
