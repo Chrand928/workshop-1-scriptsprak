@@ -12,24 +12,61 @@ data = json.load(open("network-devices.json","r",encoding = "utf-8"))
 def format_device_type(device_type):
     return device_type.replace ("_", " ").title()
 
-# Create a variable that holds our whole text report
-report = ""
+# Summary of the report
+summary = ""
 
 # Adds company name variable to the report
-report += "==============================\n" + "Nätverksrapport - " 
+summary += "==============================\n" + "Nätverksrapport - " 
 for company in data["company"]:
-    report += company
-report += "\n==============================\n"
+    summary += company
+summary += "\n==============================\n"
 
 # Adds time and date value to the report
-report += f"Rapportdatum: {time_format}\n"
+summary += f"Rapportdatum: {time_format}\n"
 
 # Adds time of the creation of the json report data
-report += "Datauppdatering: "
+summary += "Datauppdatering: "
 for last_updated in data["last_updated"]:
-    report += last_updated
-report += "\n"
+    summary += last_updated
+summary += "\n"
 
+summary += "\nEXECUTIVE SUMMARY\n" + "------------------------------\n"
+
+# Summary of devices with offline status 
+total_offline_devices = sum( 1 
+    for location in data["locations"] 
+    for device in location["devices"]
+    if device["status"] == "offline")
+summary += f"⚠ KRITISKT: {total_offline_devices} enheter offline\n"
+
+# Summary of devices with warning status
+total_warning_devices = sum( 1
+                            for location in data["locations"]
+                            for device in location["devices"]
+                            if device["status"] == "warning")
+summary += f"⚠ VARNING: {total_warning_devices} enheter med varningsstatus\n"
+
+# Summary of devices with low uptime
+total_low_uptime_devices = sum ( 1
+                                for location in data["locations"]
+                                for device in location["devices"]
+                                if device["uptime_days"] < 30)
+summary += (f"⚠ {total_low_uptime_devices} enheter med låg uptime (<30 dagar) - kan indikera instabilitet\n")
+
+# Summary of switches with high port usage
+high_usage_switches = 0
+for location in data["locations"]:
+    for device in location["devices"]:
+        if device["type"] == "switch":
+            used_ports = device["ports"]["used"]
+            total_ports = device["ports"]["total"]
+            usage_percent = (used_ports / total_ports) * 100
+            if usage_percent > 80:
+                high_usage_switches += 1
+summary += f"⚠ {high_usage_switches} switchar har hög portanvändning (>80%)\n"
+
+# Create a variable that holds our whole text report
+report = ""
 
 report += "\n" + "ENHETER MED PROBLEM" + "\n------------------------------"
 
@@ -41,9 +78,9 @@ for location in data["locations"]:
         if device["status"] == "offline":
             formatted_type = format_device_type(device["type"])    
             report +=( " "
-                    + device["hostname"].ljust (17, " ") 
-                    + device["ip_address"].ljust (17, " ") 
-                    + formatted_type.ljust (17, " ") 
+                    + device["hostname"].ljust(17, " ") 
+                    + device["ip_address"].ljust(17, " ") 
+                    + formatted_type.ljust(17, " ") 
                     + location["site"] 
                     + "\n")
 
@@ -116,7 +153,7 @@ for location in data["locations"]:
 
         types_of_devices[device_type]["total"] += 1
 
-        if device.get("status") == "offline":
+        if device["status"] == "offline":
             total_offline += 1
             types_of_devices[device_type]["offline"] += 1
 
@@ -145,7 +182,6 @@ total_ports = 0
 
 # Gathers information and adds formulas to count the sum of the ports
 for location in data["locations"]:
-    site = location["site"]
     switches = [device for device in location["devices"] if device["type"] == "switch"]
     num_switches = len(switches)
     used_ports = sum(sp["ports"]["used"] for sp in switches)
@@ -164,7 +200,7 @@ for location in data["locations"]:
     warning = " ⚠ " if usage_percent > 80 else ""
     critical = "KRITISKT! ⚠" if usage_percent > 90 else ""
     report += (
-            f"{site}".ljust(18) +
+            f"{location["site"]}".ljust(18) +
             f"{num_switches}".ljust(1) + " st".ljust(9) +
             f"{used_ports}/{total_site_ports}".ljust(15) + 
             f"{usage_percent:.1f}%".ljust (6) + 
@@ -234,11 +270,8 @@ for row in vlans_rows[1:]:
 
 report += "\n" + "STATISTIK PER SITE" + "\n------------------------------\n"
 
-for location in data ["locations"]:
-    site = location["site"]
-    city = location["city"]
-    contact = location["contact"]
-
+for location in data["locations"]:
+    
     # Counts the units by their status
     total_devices = len(location["devices"])
     online_devices = sum(1 for device in location["devices"] if device["status"] == "online")
@@ -249,9 +282,9 @@ for location in data ["locations"]:
     status_string = f"{online_devices} online, {offline_devices} offline, {warning_devices} warning"
 
     # Adds all the gathered info to the report
-    report += f"{site} ({city}):\n"
+    report += f"{location["site"]} ({location["city"]}):\n"
     report += f" Enheter: {total_devices} ({status_string})\n"
-    report += f" Kontakt: {contact}\n\n"
+    report += f" Kontakt: {location["contact"]}\n\n"
 
 
 report += "\n" + "ACCESSPUNKTER - KLIENTÖVERSIKT" + "\n------------------------------\n"
@@ -264,7 +297,7 @@ for location in data["locations"]:
             access_points.append({"hostname": device["hostname"],
                                   "connected_clients": device["connected_clients"]})
 
-#Sorts access points from high to low
+# Sorts access points from high to low
 access_points_sorted = sorted(access_points, key=lambda ap: ap["connected_clients"], reverse=True)
 
 # Adds the most used access points to the report
@@ -276,14 +309,45 @@ for ap in access_points_sorted:
                    f"{warning}\n")
 
 
+report += "\n" + "REKOMMENDATIONER" + "\n------------------------------\n"
+
+offline_devices = sum(1 for location in data["locations"] for device in location ["devices"] if device["status"] == "offline")
+report += f"* ⚠ AKUT: Undersök offline-enheter omgående ({offline_devices} st)\n"
+
+datacenter_usage = None
+for location in data["locations"]:
+    if location["site"] == "Datacenter":
+        switches = [device for device in location["devices"] if device["type"] == "switch"]
+        used_ports = sum(s["ports"]["used"] for s in switches)
+        total_ports = sum(s["ports"]["total"] for s in switches)
+        if total_ports > 0:
+            usage_percent = (used_ports / total_ports) * 100
+            if usage_percent > 90:
+                datacenter_usage = usage_percent
+
+if datacenter_usage is not None:
+    report += "* ⚠ KRITISKT: Datacenter har extremt låg uptime - planera expansion\n"
+
+report += "* Kontrollera enheter med låg uptime - särskilt de med <5 dagar\n"
+
+# Reccomendation message for the access-point with the most connected clients
+access_points = [
+    device
+    for location in data["locations"]
+    for device in location["devices"]
+    if device["type"] == "access_point" and "connected_clients" in device
+]
+
+if access_points:
+    most_ap = max(access_points, key=lambda ap: ap["connected_clients"])
+    report += (f"* {most_ap["hostname"]} har {most_ap["connected_clients"]} anslutna klienter (warning) - överväg lastbalansering\n")
+
+report += "\n==============================\n" + "RAPPORT SLUT" + "\n==============================\n"
 
 
-# Summering av rapporten där summary hamnar ovanför report när den skrivs till .txt fil
-#summary = ""
-#summary += "Summary:\n"
-#summary += device["type"] osv.
-#report = summary + report
+# Combines summary and report to write to .txt file
+full_report = summary + report
 
 # Write the report to textfile
 with open ("report.txt", "w", encoding="utf-8") as f:
-    f.write(report)
+    f.write(full_report)
