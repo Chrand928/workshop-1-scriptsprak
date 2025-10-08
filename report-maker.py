@@ -213,28 +213,40 @@ report += f"\nTotalt: ".ljust(5) + f"{total_used_ports}/{total_ports} portar anv
 
 report += "\n" + "SWITCHAR MED HÖG PORTANVÄNDNING (>80%)" + "\n------------------------------\n"
 
-# Planning to change some code here to sort by the highest percentages first...
 
-#Gather information and combine "ports" with "used" and "total" values to use in a calculation
-for location in data ["locations"]:
-    for device in location ["devices"]:
-        if device ["type"] == "switch":
+# Gather information and combine "ports" with "used" and "total" values to use in a calculation
+high_usage_switches = []
+
+for location in data["locations"]:
+    for device in location["devices"]:
+        if device["type"] == "switch":
             used_ports = device["ports"]["used"]
             total_ports = device["ports"]["total"]
             usage_percent = (used_ports / total_ports) * 100
 
-            # Adds variables for when warning messages get added to the report 
+            # Adds variables for when warning messages get added to the report (80% or higher)
             if usage_percent > 80:
-                warning = " ⚠ "
-                full = "FULLT! ⚠" if used_ports == total_ports else ""
+                high_usage_switches.append({
+                    "hostname": device["hostname"],
+                    "used_ports": used_ports,
+                    "total_ports": total_ports,
+                    "usage_percent": usage_percent
+                })
+
+# Sorts the list by usage_percent from high to low
+high_usage_switches.sort(key=lambda switch: switch["usage_percent"], reverse=True)                
+
+# Adds the warning message when criterias are met
+for switch in high_usage_switches:
+    warning = " ⚠ "
+    full = "FULLT! ⚠" if switch["used_ports"] == switch["total_ports"] else ""
                 
-                # Adds gathered information to the report
-                report += (
-                    f"{device["hostname"]}".ljust(18) + 
-                    f"{used_ports}/{total_ports}".ljust(10) + 
-                    f"{usage_percent:.1f}%".ljust(8) +
-                    f"{warning}{full}\n"
-                )
+        # Adds gathered information to the report
+    report += (
+        f"{switch["hostname"]}".ljust(18) + 
+        f"{switch["used_ports"]}/{switch["total_ports"]}".ljust(10) + 
+        f"{switch["usage_percent"]:.1f}%".ljust(8) +
+        f"{warning}{full}\n")
 
 
 report += "\n" + "VLAN-ÖVERSIKT" + "\n------------------------------\n"
